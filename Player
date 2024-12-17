@@ -1,0 +1,96 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class Player : MonoBehaviour
+{
+    public float moveSpeed = 5f;
+
+    Rigidbody2D rb2d;
+
+    public bool isJumping;
+
+    float moveInput;
+
+    public float jump;
+    
+    void Start()
+    {
+        rb2d = GetComponent<Rigidbody2D>();
+    }
+
+    
+
+    void Update()
+    {
+        moveInput = Input.GetAxisRaw("Horizontal");
+
+        if (Input.GetButtonDown("Jump") && isJumping == false)
+        {
+            rb2d.AddForce(new Vector2(rb2d.velocity.x, jump));
+        }
+
+    }
+    private void FixedUpdate()
+    {
+        rb2d.velocity = new Vector2(moveInput * moveSpeed, rb2d.velocity.y);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.gameObject.CompareTag("Coin"))
+        {
+            Destroy(collision.gameObject);
+        }
+    }
+
+
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+
+        if (collision.gameObject.CompareTag("Spike"))
+        {
+            SceneManager.LoadScene(0);
+        }
+
+        if (collision.gameObject.CompareTag("Monster"))
+        {
+            SceneManager.LoadScene(2);
+        }
+
+        if (collision.gameObject.CompareTag("Mmonster"))
+        {
+            SceneManager.LoadScene(1);
+        }
+        if (collision.gameObject.CompareTag("Mmmonster"))
+        {
+            SceneManager.LoadScene(0);
+        }
+
+        if (collision.gameObject.CompareTag("Ssspike"))
+        {
+            SceneManager.LoadScene(1);
+        }
+
+        if (collision.gameObject.CompareTag("Sspike"))
+        {
+            SceneManager.LoadScene(2);
+        }
+
+        if (collision.gameObject.CompareTag("Floor"))
+        {
+            isJumping = false;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Floor"))
+        {
+            isJumping = true;
+        }
+    }
+
+}
